@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Vote on Tasks{% endblock %}
+{% block content %}
+<div class="container">
+  <h2 class="mb-4 text-center">صوت على المهام</h2>
+  <form method="POST">
+    <div class="mb-4">
+      <h3>المهام اليومية (Daily Tasks) - كل مهمة تعطي 10 نقطة</h3>
+      <ul class="list-group">
+        {% for task in available_daily %}
+        <li class="list-group-item">
+          <input type="checkbox" name="daily_tasks" value="{{ task }}" id="daily-{{ loop.index }}">
+          <label for="daily-{{ loop.index }}">{{ task }} - 10 نقطة</label>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    
+    <div class="mb-4">
+      <h3>التحديات (Challenge Tasks)</h3>
+      <ul class="list-group">
+        {% for task in available_challenge %}
+        <li class="list-group-item">
+          {% set ns = namespace(pts=0) %}
+          {% for t, p in challenge_tasks %}
+            {% if t == task %}
+              {% set ns.pts = p %}
+            {% endif %}
+          {% endfor %}
+          <input type="checkbox" name="challenge_tasks" value="{{ task }}" id="challenge-{{ loop.index }}">
+          <label for="challenge-{{ loop.index }}">{{ task }} - {{ ns.pts }} نقطة</label>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    
+    <button type="submit" class="btn btn-primary w-100">سجل الأصوات</button>
+  </form>
+  
+  <div class="mt-4">
+    <h4>المهام التي تم التصويت عليها (هذه الفترة)</h4>
+    <p>المهام اليومية: {{ voted_daily|join(', ') if voted_daily else 'لا توجد' }}</p>
+    <p>التحديات: {{ voted_challenge|join(', ') if voted_challenge else 'لا توجد' }}</p>
+  </div>
+</div>
+{% endblock %}

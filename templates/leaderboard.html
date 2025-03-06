@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Leaderboard{% endblock %}
+{% block content %}
+<div class="card mx-auto" style="max-width: 600px;">
+  <div class="card-header bg-dark text-white">
+    <h3 class="mb-0 text-center">Leaderboard</h3>
+  </div>
+  <div class="card-body">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Daily Tasks</th>
+          <th>Challenge Tasks</th>
+          <th>Points</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in leaderboard %}
+        <tr>
+          <td>{{ entry.username }}</td>
+          <td>{{ entry.daily_count }}</td>
+          <td>{{ entry.challenge_count }}</td>
+          <td>{{ entry.points }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

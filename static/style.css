@@ -1,0 +1,44 @@
+/* Overall body styling */
+body {
+  background: #ecf0f1; /* light gray */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2c3e50; /* dark blue-gray for text */
+}
+
+/* Custom Navbar styling using cold colors */
+.custom-navbar {
+  background-color: #34495e; /* dark cool blue-gray */
+  padding: 20px 0;
+  margin-bottom: 20px;
+}
+
+/* Updated logo styling: larger and perfectly fitting in the navbar */
+.custom-navbar .logo {
+  max-height: 100px; /* Increased logo height */
+  width: auto;       /* Maintain aspect ratio */
+}
+
+/* Navigation link styling */
+.nav-link {
+  color: #bdc3c7 !important; /* soft light gray */
+  font-size: 1.1rem;
+}
+
+.nav-link:hover {
+  color: #ecf0f1 !important; /* nearly white on hover */
+}
+
+/* Container styling for page content */
+.container {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Styling for flash messages */
+.alert-info {
+  background-color: #3498db; /* cool blue */
+  color: #fff;
+  border: none;
+}
