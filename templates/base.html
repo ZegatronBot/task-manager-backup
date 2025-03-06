@@ -5,6 +5,10 @@
     <title>{% block title %}Task Voting{% endblock %}</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Cairo (for Arabic) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
@@ -19,24 +23,24 @@
         <div class="nav-links w-100">
           <ul class="nav justify-content-center">
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('tasks_page') }}">المهام</a>
+                <a class="nav-link" href="{{ url_for('tasks_page') }}"><i class="fas fa-clipboard-list me-1"></i> المهام</a>
               </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('vote') }}">Vote</a>
+              <a class="nav-link" href="{{ url_for('vote') }}"><i class="fas fa-vote-yea me-1"></i> التصويت</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('leaderboard') }}">Leaderboard</a>
+              <a class="nav-link" href="{{ url_for('leaderboard') }}"><i class="fas fa-trophy me-1"></i> المتصدرين</a>
             </li>
             {% if session.get('user_id') %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+              <a class="nav-link" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-1"></i> تسجيل الخروج</a>
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+              <a class="nav-link" href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt me-1"></i> تسجيل الدخول</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('signup') }}">Signup</a>
+              <a class="nav-link" href="{{ url_for('signup') }}"><i class="fas fa-user-plus me-1"></i> إنشاء حساب</a>
             </li>
             {% endif %}
           </ul>
@@ -48,13 +52,20 @@
         {% if messages %}
           <div class="alert alert-info">
             {% for message in messages %}
-              <p class="mb-0">{{ message }}</p>
+              <p class="mb-0"><i class="fas fa-info-circle me-2"></i>{{ message }}</p>
             {% endfor %}
           </div>
         {% endif %}
       {% endwith %}
       {% block content %}{% endblock %}
     </div>
+    
+    <footer class="footer mt-auto py-3">
+      <div class="container text-center">
+        <p class="mb-0">Task Manage &copy; 2025 | كل الحقوق محفوظة</p>
+      </div>
+    </footer>
+    
     <!-- Bootstrap Bundle JS (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>

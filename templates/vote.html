@@ -1,46 +1,140 @@
 {% extends "base.html" %}
-{% block title %}Vote on Tasks{% endblock %}
+{% block title %}التصويت على المهام{% endblock %}
 {% block content %}
 <div class="container">
-  <h2 class="mb-4 text-center">صوت على المهام</h2>
+  <div class="user-points-banner mb-4">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h2 class="mb-0"><i class="fas fa-tasks me-2"></i>صوت على المهام</h2>
+      </div>
+      <div class="col-md-4 text-end">
+        <div class="points-display">
+          <i class="fas fa-star me-1 text-warning"></i> النقاط الكلية: <span class="points-value">{{ total_points }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <form method="POST">
-    <div class="mb-4">
-      <h3>المهام اليومية (Daily Tasks) - كل مهمة تعطي 10 نقطة</h3>
-      <ul class="list-group">
-        {% for task in available_daily %}
-        <li class="list-group-item">
-          <input type="checkbox" name="daily_tasks" value="{{ task }}" id="daily-{{ loop.index }}">
-          <label for="daily-{{ loop.index }}">{{ task }} - 10 نقطة</label>
-        </li>
-        {% endfor %}
-      </ul>
+    <!-- Daily Tasks Card -->
+    <div class="card task-card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h3 class="mb-0"><i class="fas fa-calendar-day me-2"></i>المهام اليومية - 10 نقطة لكل مهمة</h3>
+      </div>
+      <div class="card-body">
+        {% if available_daily %}
+          <div class="row">
+            {% for task in available_daily %}
+            <div class="col-md-6">
+              <div class="form-check task-checkbox mb-3">
+                <input class="form-check-input" type="checkbox" name="daily_tasks" value="{{ task }}" id="daily-{{ loop.index }}">
+                <label class="form-check-label" for="daily-{{ loop.index }}">
+                  {{ task }} 
+                  <span class="badge bg-primary points-badge">10 نقطة</span>
+                </label>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle me-2"></i>لقد أكملت جميع المهام اليومية!
+          </div>
+        {% endif %}
+      </div>
     </div>
     
-    <div class="mb-4">
-      <h3>التحديات (Challenge Tasks)</h3>
-      <ul class="list-group">
-        {% for task in available_challenge %}
-        <li class="list-group-item">
-          {% set ns = namespace(pts=0) %}
-          {% for t, p in challenge_tasks %}
-            {% if t == task %}
-              {% set ns.pts = p %}
-            {% endif %}
-          {% endfor %}
-          <input type="checkbox" name="challenge_tasks" value="{{ task }}" id="challenge-{{ loop.index }}">
-          <label for="challenge-{{ loop.index }}">{{ task }} - {{ ns.pts }} نقطة</label>
-        </li>
-        {% endfor %}
-      </ul>
+    <!-- Challenge Tasks Card -->
+    <div class="card task-card mb-4">
+      <div class="card-header bg-success text-white">
+        <h3 class="mb-0"><i class="fas fa-award me-2"></i>التحديات</h3>
+      </div>
+      <div class="card-body">
+        {% if available_challenge %}
+          <div class="row">
+            {% for task in available_challenge %}
+            <div class="col-md-6">
+              <div class="form-check task-checkbox mb-3">
+                {% set ns = namespace(pts=0) %}
+                {% for t, p in challenge_tasks %}
+                  {% if t == task %}
+                    {% set ns.pts = p %}
+                  {% endif %}
+                {% endfor %}
+                <input class="form-check-input" type="checkbox" name="challenge_tasks" value="{{ task }}" id="challenge-{{ loop.index }}">
+                <label class="form-check-label" for="challenge-{{ loop.index }}">
+                  {{ task }}
+                  <span class="badge bg-success points-badge">{{ ns.pts }} نقطة</span>
+                </label>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle me-2"></i>لقد أكملت جميع التحديات!
+          </div>
+        {% endif %}
+      </div>
     </div>
     
-    <button type="submit" class="btn btn-primary w-100">سجل الأصوات</button>
+    <button type="submit" class="btn btn-primary btn-lg w-100 mb-4">
+      <i class="fas fa-save me-2"></i>سجل الأصوات
+    </button>
   </form>
   
-  <div class="mt-4">
-    <h4>المهام التي تم التصويت عليها (هذه الفترة)</h4>
-    <p>المهام اليومية: {{ voted_daily|join(', ') if voted_daily else 'لا توجد' }}</p>
-    <p>التحديات: {{ voted_challenge|join(', ') if voted_challenge else 'لا توجد' }}</p>
+  <!-- Completed Tasks Card -->
+  <div class="card completed-tasks-card">
+    <div class="card-header bg-info text-white">
+      <h4 class="mb-0"><i class="fas fa-clipboard-check me-2"></i>المهام المكتملة (هذه الفترة)</h4>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h5 class="mb-3"><i class="fas fa-calendar-day me-1 text-primary"></i> المهام اليومية:</h5>
+          {% if voted_daily %}
+            <ul class="list-group">
+              {% for task in voted_daily %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                    {{ task }}
+                  </div>
+                  <span class="badge bg-primary">10 نقطة</span>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted"><i class="fas fa-info-circle me-1"></i> لم تكمل أي مهام يومية بعد.</p>
+          {% endif %}
+        </div>
+        
+        <div class="col-md-6">
+          <h5 class="mb-3"><i class="fas fa-award me-1 text-success"></i> التحديات:</h5>
+          {% if voted_challenge %}
+            <ul class="list-group">
+              {% for task in voted_challenge %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                    {{ task }}
+                  </div>
+                  {% set ns = namespace(pts=0) %}
+                  {% for t, p in challenge_tasks %}
+                    {% if t == task %}
+                      {% set ns.pts = p %}
+                    {% endif %}
+                  {% endfor %}
+                  <span class="badge bg-success">{{ ns.pts }} نقطة</span>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted"><i class="fas fa-info-circle me-1"></i> لم تكمل أي تحديات بعد.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

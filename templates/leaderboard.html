@@ -1,31 +1,84 @@
 {% extends "base.html" %}
-{% block title %}Leaderboard{% endblock %}
+{% block title %}المتصدرين | Task Manage{% endblock %}
 {% block content %}
-<div class="card mx-auto" style="max-width: 600px;">
-  <div class="card-header bg-dark text-white">
-    <h3 class="mb-0 text-center">Leaderboard</h3>
+<div class="page-header mb-4 text-center">
+  <h2><i class="fas fa-trophy text-warning me-2"></i>المتصدرين</h2>
+</div>
+
+{% if user_data %}
+<div class="user-summary-card mb-4">
+  <div class="row align-items-center p-3">
+    <div class="col-md-2 text-center avatar-container">
+      <i class="fas fa-user-circle fa-4x mb-2"></i>
+      <h4 class="mb-0">{{ user_data.username }}</h4>
+      <div class="badge bg-light text-primary mt-2">
+        <i class="fas fa-medal me-1"></i> المركز {{ user_rank }}
+      </div>
+    </div>
+    <div class="col-md-10">
+      <div class="row text-center">
+        <div class="col-md-4">
+          <div class="stat-item">
+            <div class="stat-value">{{ user_data.points }}</div>
+            <div class="stat-label"><i class="fas fa-star me-1"></i> مجموع النقاط</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-item">
+            <div class="stat-value">{{ user_data.daily_count }}</div>
+            <div class="stat-label"><i class="fas fa-calendar-day me-1"></i> المهام اليومية</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-item">
+            <div class="stat-value">{{ user_data.challenge_count }}</div>
+            <div class="stat-label"><i class="fas fa-award me-1"></i> التحديات</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="card-body">
-    <table class="table table-striped">
-      <thead>
+</div>
+{% endif %}
+
+<div class="card leaderboard-card">
+  <div class="card-header bg-dark text-white">
+    <h3 class="mb-0 text-center"><i class="fas fa-list-ol me-2"></i>جدول المتصدرين</h3>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-striped mb-0">
+      <thead class="bg-light">
         <tr>
-          <th>Username</th>
-          <th>Daily Tasks</th>
-          <th>Challenge Tasks</th>
-          <th>Points</th>
+          <th class="text-center">#</th>
+          <th>اسم المستخدم</th>
+          <th class="text-center"><i class="fas fa-calendar-day text-primary me-1"></i> المهام اليومية</th>
+          <th class="text-center"><i class="fas fa-award text-success me-1"></i> التحديات</th>
+          <th class="text-center"><i class="fas fa-star text-warning me-1"></i> النقاط</th>
         </tr>
       </thead>
       <tbody>
         {% for entry in leaderboard %}
-        <tr>
-          <td>{{ entry.username }}</td>
-          <td>{{ entry.daily_count }}</td>
-          <td>{{ entry.challenge_count }}</td>
-          <td>{{ entry.points }}</td>
+        <tr class="{% if entry.is_current_user %}current-user-row{% endif %}">
+          <td class="text-center">{{ loop.index }}</td>
+          <td>
+            {% if entry.is_current_user %}
+            <i class="fas fa-user me-1 text-primary"></i>
+            {% endif %}
+            {{ entry.username }}
+          </td>
+          <td class="text-center">{{ entry.daily_count }}</td>
+          <td class="text-center">{{ entry.challenge_count }}</td>
+          <td class="text-center fw-bold">{{ entry.points }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
+</div>
+
+<div class="text-center mt-4">
+  <a href="{{ url_for('vote') }}" class="btn btn-primary">
+    <i class="fas fa-vote-yea me-2"></i>العودة للتصويت
+  </a>
 </div>
 {% endblock %}

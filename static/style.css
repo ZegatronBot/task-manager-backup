@@ -1,44 +1,317 @@
-/* Overall body styling */
+/* Global Styles */
+:root {
+  --primary-color: #2c3e50;
+  --secondary-color: #3498db;
+  --success-color: #2ecc71;
+  --warning-color: #f39c12;
+  --danger-color: #e74c3c;
+  --light-color: #ecf0f1;
+  --dark-color: #34495e;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 body {
-  background: #ecf0f1; /* light gray */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #2c3e50; /* dark blue-gray for text */
+  font-family: 'Cairo', sans-serif;
+  background-color: #f8f9fa;
+  direction: rtl;
+  text-align: right;
 }
 
-/* Custom Navbar styling using cold colors */
+/* Navbar Styling */
 .custom-navbar {
-  background-color: #34495e; /* dark cool blue-gray */
-  padding: 20px 0;
-  margin-bottom: 20px;
+  background-color: var(--primary-color);
+  box-shadow: var(--shadow);
+  padding: 0.5rem 0;
 }
 
-/* Updated logo styling: larger and perfectly fitting in the navbar */
-.custom-navbar .logo {
-  max-height: 100px; /* Increased logo height */
-  width: auto;       /* Maintain aspect ratio */
+.logo {
+  height: 50px;
+  margin-bottom: 8px;
 }
 
-/* Navigation link styling */
-.nav-link {
-  color: #bdc3c7 !important; /* soft light gray */
-  font-size: 1.1rem;
+.nav-links {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  padding: 5px;
+  margin-top: 10px;
 }
 
-.nav-link:hover {
-  color: #ecf0f1 !important; /* nearly white on hover */
+.nav-links .nav-link {
+  color: white;
+  margin: 0 5px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
 }
 
-/* Container styling for page content */
-.container {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.nav-links .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
 }
 
-/* Styling for flash messages */
-.alert-info {
-  background-color: #3498db; /* cool blue */
-  color: #fff;
+/* Card Styling */
+.card {
+  box-shadow: var(--shadow);
+  border-radius: 10px;
   border: none;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 15px 20px;
+  font-weight: bold;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* Task Cards */
+.task-card {
+  transition: transform 0.3s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-5px);
+}
+
+.task-checkbox {
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.task-checkbox:hover {
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+.form-check-input {
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+}
+
+.form-check-label {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.points-badge {
+  font-size: 0.8rem;
+  padding: 5px 10px;
+  border-radius: 20px;
+  margin-right: 10px;
+}
+
+/* User Points Banner */
+.user-points-banner {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: var(--shadow);
+  border-right: 5px solid var(--warning-color);
+}
+
+.points-display {
+  background-color: white;
+  padding: 10px 15px;
+  border-radius: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+}
+
+.points-value {
+  font-weight: bold;
+  font-size: 18px;
+  color: var(--primary-color);
+}
+
+/* Completed Tasks */
+.completed-tasks-card {
+  background-color: #f8f9fa;
+}
+
+.list-group-item {
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+  padding: 12px 15px;
+}
+
+/* Auth Cards */
+.auth-card {
+  box-shadow: var(--shadow);
+  border-radius: 15px;
+  overflow: hidden;
+  margin-top: 50px;
+}
+
+.auth-icon {
+  color: var(--secondary-color);
+}
+
+/* Leaderboard Styling */
+.leaderboard-card {
+  box-shadow: var(--shadow);
+  border: none;
+}
+
+.current-user-row {
+  background-color: rgba(52, 152, 219, 0.1) !important;
+  font-weight: 500;
+}
+
+.user-summary-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.avatar-container {
+  color: var(--primary-color);
+}
+
+.stat-item {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  margin: 5px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.stat-label {
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+/* Task List */
+.task-list-card {
+  box-shadow: var(--shadow);
+}
+
+.task-list .list-group-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+}
+
+.task-icon-wrapper {
+  width: 24px;
+  text-align: center;
+}
+
+.task-name {
+  margin: 0 10px;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.btn-primary:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-lg {
+  padding: 12px 24px;
+  font-size: 18px;
+}
+
+/* Footer */
+.footer {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 15px 0;
+  margin-top: 50px;
+}
+
+/* Alerts */
+.alert {
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .points-display {
+    margin-top: 10px;
+    display: block;
+    text-align: center;
+  }
+  
+  .user-points-banner {
+    text-align: center;
+  }
+  
+  .form-check-label {
+    font-size: 14px;
+  }
+  
+  .stat-item {
+    margin-bottom: 10px;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeIn 0.5s ease;
+}
+
+/* Custom checkboxes */
+.form-check-input {
+  cursor: pointer;
+}
+
+.form-check-input:checked {
+  background-color: var(--success-color);
+  border-color: var(--success-color);
+}
+
+/* Custom badge colors */
+.bg-primary {
+  background-color: var(--secondary-color) !important;
+}
+
+.bg-success {
+  background-color: var(--success-color) !important;
+}
+
+.bg-warning {
+  background-color: var(--warning-color) !important;
+}
+
+.bg-info {
+  background-color: #3498db !important;
 }

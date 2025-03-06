@@ -115,7 +115,7 @@ def create_app():
         
         # Determine the start of the current voting period (reset at 10:18 PM)
         now = datetime.datetime.now()
-        today_reset = now.replace(hour=22, minute=18, second=0, microsecond=0)
+        today_reset = now.replace(hour=9, minute=36, second=0, microsecond=0)
         period_start = today_reset - datetime.timedelta(days=1) if now < today_reset else today_reset
 
         # Retrieve voted tasks for current period
@@ -128,6 +128,9 @@ def create_app():
 
         available_daily = [task for task in DAILY_TASKS if task not in voted_daily]
         available_challenge = [task for task, pts in CHALLENGE_TASKS if task not in voted_challenge]
+        
+        # Calculate total points for user
+        total_points = sum(ut.points for ut in user.tasks)
         
         if request.method == 'POST':
             selected_daily = request.form.getlist('daily_tasks')
@@ -163,32 +166,58 @@ def create_app():
                                voted_daily=voted_daily,
                                available_challenge=available_challenge,
                                voted_challenge=voted_challenge,
-                               challenge_tasks=CHALLENGE_TASKS)
+                               challenge_tasks=CHALLENGE_TASKS,
+                               total_points=total_points)
 
     @app.route('/leaderboard')
     def leaderboard():
         users = User.query.all()
         leaderboard_data = []
+        current_user_id = session.get('user_id')
+        
         for user in users:
             total_points = sum(ut.points for ut in user.tasks)
             daily_count = len([ut for ut in user.tasks if ut.task_type == "daily"])
             challenge_count = len([ut for ut in user.tasks if ut.task_type == "challenge"])
+            
             leaderboard_data.append({
                 'username': user.username,
                 'daily_count': daily_count,
                 'challenge_count': challenge_count,
-                'points': total_points
+                'points': total_points,
+                'is_current_user': user.id == current_user_id  # Flag to identify the current user
             })
+        
         leaderboard_data.sort(key=lambda x: x['points'], reverse=True)
-        return render_template('leaderboard.html', leaderboard=leaderboard_data)
+        
+        # Find current user's rank
+        user_rank = None
+        user_data = None
+        
+        if current_user_id:
+            for index, entry in enumerate(leaderboard_data):
+                if entry['is_current_user']:
+                    user_rank = index + 1
+                    user_data = entry
+                    break
+        
+        return render_template('leaderboard.html', 
+                               leaderboard=leaderboard_data, 
+                               user_rank=user_rank,
+                               user_data=user_data)
     
     # Read-only tasks page
     @app.route('/tasks')
     def tasks_page():
         daily_tasks_info = [(task, 10) for task in DAILY_TASKS]
+        
+        # Calculate total possible points for challenge tasks
+        total_challenge_points = sum(pts for _, pts in CHALLENGE_TASKS)
+        
         return render_template('tasks.html', 
                                daily_tasks=daily_tasks_info, 
-                               challenge_tasks=CHALLENGE_TASKS)
+                               challenge_tasks=CHALLENGE_TASKS,
+                               total_challenge_points=total_challenge_points)
 
     return app
 
