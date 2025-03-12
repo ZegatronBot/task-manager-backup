@@ -1,0 +1,101 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "username": "ahmed",
+            "tasks": [
+                {
+                    "id": 1,
+                    "task_name": "السنن (3 على الاقل)",
+                    "vote_time": "2025-03-11T23:17:32.552415",
+                    "points": 10,
+                    "task_type": "daily"
+                },
+                {
+                    "id": 2,
+                    "task_name": "500 ذكر الله",
+                    "vote_time": "2025-03-11T23:17:32.552582",
+                    "points": 10,
+                    "task_type": "daily"
+                },
+                {
+                    "id": 3,
+                    "task_name": "الصلاة في جماعة (3 على الاقل)",
+                    "vote_time": "2025-03-11T23:17:32.552642",
+                    "points": 10,
+                    "task_type": "daily"
+                },
+                {
+                    "id": 4,
+                    "task_name": "الإفطار على سنة النبي",
+                    "vote_time": "2025-03-11T23:17:32.552699",
+                    "points": 10,
+                    "task_type": "daily"
+                },
+                {
+                    "id": 5,
+                    "task_name": "صلاة التراويح",
+                    "vote_time": "2025-03-11T23:17:32.552753",
+                    "points": 50,
+                    "task_type": "challenge"
+                },
+                {
+                    "id": 6,
+                    "task_name": "اذكار الصباح والمساء",
+                    "vote_time": "2025-03-11T23:17:32.552797",
+                    "points": 50,
+                    "task_type": "challenge"
+                },
+                {
+                    "id": 7,
+                    "task_name": "الشفع و الوتر",
+                    "vote_time": "2025-03-11T23:17:32.552833",
+                    "points": 20,
+                    "task_type": "challenge"
+                },
+                {
+                    "id": 8,
+                    "task_name": "قراءة جزء من القرآن",
+                    "vote_time": "2025-03-11T23:17:32.552865",
+                    "points": 80,
+                    "task_type": "challenge"
+                },
+                {
+                    "id": 9,
+                    "task_name": "صلاة الفجر",
+                    "vote_time": "2025-03-11T23:19:10.281769",
+                    "points": 10,
+                    "task_type": "daily"
+                },
+                {
+                    "id": 10,
+                    "task_name": "قيام الليل",
+                    "vote_time": "2025-03-11T23:19:10.281769",
+                    "points": 10,
+                    "task_type": "daily"
+                },
+                {
+                    "id": 11,
+                    "task_name": "300 صلاة على النبي",
+                    "vote_time": "2025-03-11T23:24:57.899238",
+                    "points": 10,
+                    "task_type": "daily"
+                },
+                {
+                    "id": 12,
+                    "task_name": "إفطار صائم",
+                    "vote_time": "2025-03-11T23:24:57.899238",
+                    "points": 10,
+                    "task_type": "daily"
+                },
+                {
+                    "id": 13,
+                    "task_name": "اذكار الصلاة",
+                    "vote_time": "2025-03-11T23:24:57.899238",
+                    "points": 10,
+                    "task_type": "daily"
+                }
+            ]
+        }
+    ]
+}
