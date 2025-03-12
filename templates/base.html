@@ -1,7 +1,17 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/static/sw.js')
+      .then(reg => console.log("Service Worker Registered"))
+      .catch(err => console.log("Service Worker Error:", err));
+  }
+</script>
+
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Task Voting{% endblock %}</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,38 +25,40 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
       <div class="container text-center">
-        <!-- Centered Logo -->
         <a class="navbar-brand d-block mx-auto" href="{{ url_for('vote') }}">
           <img src="{{ url_for('static', filename='logo.png') }}" alt="My Logo" class="logo">
         </a>
-        <!-- Navigation links below the logo -->
         <div class="nav-links w-100">
           <ul class="nav justify-content-center">
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('tasks_page') }}"><i class="fas fa-clipboard-list me-1"></i> المهام</a>
-              </li>
+              <a class="nav-link" href="{{ url_for('tasks_page') }}"><i class="fas fa-clipboard-list me-1"></i> المهام</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('vote') }}"><i class="fas fa-vote-yea me-1"></i> التصويت</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('leaderboard') }}"><i class="fas fa-trophy me-1"></i> المتصدرين</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('history') }}"><i class="fas fa-history me-1"></i> تاريخ المهام</a>
+            </li>
             {% if session.get('user_id') %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-1"></i> تسجيل الخروج</a>
-            </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-1"></i> تسجيل الخروج</a>
+              </li>
             {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt me-1"></i> تسجيل الدخول</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('signup') }}"><i class="fas fa-user-plus me-1"></i> إنشاء حساب</a>
-            </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt me-1"></i> تسجيل الدخول</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('signup') }}"><i class="fas fa-user-plus me-1"></i> إنشاء حساب</a>
+              </li>
             {% endif %}
           </ul>
         </div>
       </div>
     </nav>
+    
     <div class="container my-4">
       {% with messages = get_flashed_messages() %}
         {% if messages %}

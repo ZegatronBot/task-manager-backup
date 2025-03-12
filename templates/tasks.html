@@ -49,10 +49,6 @@
         </ul>
       </div>
       <div class="card-footer text-center bg-light">
-        {% set total_challenge_points = 0 %}
-        {% for _, pts in challenge_tasks %}
-          {% set total_challenge_points = total_challenge_points + pts %}
-        {% endfor %}
         <b>إجمالي النقاط المحتملة: {{ total_challenge_points }} نقطة</b>
       </div>
     </div>

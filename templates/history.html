@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}تاريخ المهام{% endblock %}
+{% block content %}
+<div class="container">
+  <h2 class="mb-4 text-center">تاريخ المهام</h2>
+  {% if history %}
+    {% for day, tasks in history.items() %}
+      <div class="card mb-3">
+        <div class="card-header bg-secondary text-white">
+          <h4 class="mb-0">اليوم: {{ day }}</h4>
+        </div>
+        <ul class="list-group list-group-flush">
+          {% for task in tasks %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                {{ task.task_name }} 
+                <small class="text-muted">({{ task.task_type }})</small>
+              </div>
+              <span class="badge bg-info">{{ task.points }} نقطة</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-center">لا يوجد سجل مهام بعد.</p>
+  {% endif %}
+</div>
+{% endblock %}

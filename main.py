@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
+from zoneinfo import ZoneInfo  # for timezone support
 
 # Initialize SQLAlchemy (without app context)
 db = SQLAlchemy()
@@ -14,7 +15,7 @@ DAILY_TASKS = [
     "صلاة الفجر",
     "500 ذكر الله",
     "300 صلاة على النبي",
-    "الصلاة في جماعة",
+    "الصلاة في جماعة (3 على الاقل)",
     "الدعاء",
     "الإفطار على سنة النبي",
     "إفطار صائم",
@@ -40,6 +41,7 @@ class User(db.Model):
 class UserTask(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task_name = db.Column(db.String(100), nullable=False)
+    # Stored as an offset-naive datetime
     vote_time = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     points = db.Column(db.Integer, nullable=False, default=10)
@@ -113,14 +115,29 @@ def create_app():
             session.pop('user_id', None)
             return redirect(url_for('login'))
         
-        # Determine the start of the current voting period (reset at 10:18 PM)
-        now = datetime.datetime.now()
-        today_reset = now.replace(hour=9, minute=36, second=0, microsecond=0)
+        # Get current time in Cairo (offset-aware)
+        now = datetime.datetime.now(ZoneInfo("Africa/Cairo"))
+        # Set reset time to 8:00 PM Cairo time (offset-aware)
+        today_reset = now.replace(hour=20, minute=0, second=0, microsecond=0)
         period_start = today_reset - datetime.timedelta(days=1) if now < today_reset else today_reset
+        # Convert to offset-naive for comparison (since vote_time is stored as naive)
+        period_start_naive = period_start.replace(tzinfo=None)
 
-        # Retrieve voted tasks for current period
-        voted_daily = [ut.task_name for ut in user.tasks if ut.vote_time >= period_start and ut.task_type == "daily"]
-        voted_challenge = [ut.task_name for ut in user.tasks if ut.vote_time >= period_start and ut.task_type == "challenge"]
+        # Map English weekday names to Arabic
+        day_mapping = {
+            "Saturday": "السبت",
+            "Sunday": "الأحد",
+            "Monday": "الإثنين",
+            "Tuesday": "الثلاثاء",
+            "Wednesday": "الأربعاء",
+            "Thursday": "الخميس",
+            "Friday": "الجمعة"
+        }
+        voting_day = day_mapping.get(period_start.strftime("%A"), period_start.strftime("%A"))
+
+        # Retrieve voted tasks for current period using the naive period_start
+        voted_daily = [ut.task_name for ut in user.tasks if ut.vote_time >= period_start_naive and ut.task_type == "daily"]
+        voted_challenge = [ut.task_name for ut in user.tasks if ut.vote_time >= period_start_naive and ut.task_type == "challenge"]
 
         # Remove duplicates
         voted_daily = list(dict.fromkeys(voted_daily))
@@ -133,13 +150,15 @@ def create_app():
         total_points = sum(ut.points for ut in user.tasks)
         
         if request.method == 'POST':
+            # Use Cairo time and convert to naive when storing
+            current_vote_time = datetime.datetime.now(ZoneInfo("Africa/Cairo")).replace(tzinfo=None)
             selected_daily = request.form.getlist('daily_tasks')
             for task in selected_daily:
                 if task in DAILY_TASKS and task not in voted_daily:
                     new_vote = UserTask(
                         task_name=task,
                         user_id=user.id,
-                        vote_time=datetime.datetime.now(),
+                        vote_time=current_vote_time,
                         points=10,
                         task_type="daily"
                     )
@@ -151,7 +170,7 @@ def create_app():
                     new_vote = UserTask(
                         task_name=task,
                         user_id=user.id,
-                        vote_time=datetime.datetime.now(),
+                        vote_time=current_vote_time,
                         points=pts,
                         task_type="challenge"
                     )
@@ -160,14 +179,14 @@ def create_app():
             flash('Votes recorded!')
             return redirect(url_for('vote'))
         
-        # Pass challenge_tasks so that the template can display points for challenges
         return render_template('vote.html', 
                                available_daily=available_daily, 
                                voted_daily=voted_daily,
                                available_challenge=available_challenge,
                                voted_challenge=voted_challenge,
                                challenge_tasks=CHALLENGE_TASKS,
-                               total_points=total_points)
+                               total_points=total_points,
+                               voting_day=voting_day)
 
     @app.route('/leaderboard')
     def leaderboard():
@@ -185,7 +204,7 @@ def create_app():
                 'daily_count': daily_count,
                 'challenge_count': challenge_count,
                 'points': total_points,
-                'is_current_user': user.id == current_user_id  # Flag to identify the current user
+                'is_current_user': user.id == current_user_id
             })
         
         leaderboard_data.sort(key=lambda x: x['points'], reverse=True)
@@ -206,18 +225,36 @@ def create_app():
                                user_rank=user_rank,
                                user_data=user_data)
     
-    # Read-only tasks page
     @app.route('/tasks')
     def tasks_page():
         daily_tasks_info = [(task, 10) for task in DAILY_TASKS]
-        
-        # Calculate total possible points for challenge tasks
         total_challenge_points = sum(pts for _, pts in CHALLENGE_TASKS)
         
         return render_template('tasks.html', 
                                daily_tasks=daily_tasks_info, 
                                challenge_tasks=CHALLENGE_TASKS,
                                total_challenge_points=total_challenge_points)
+
+    @app.route('/history')
+    def history():
+        if 'user_id' not in session:
+            flash('Please log in first.')
+            return redirect(url_for('login'))
+        user = User.query.get(session['user_id'])
+        if user is None:
+            flash('User not found. Please log in again.')
+            session.pop('user_id', None)
+            return redirect(url_for('login'))
+        # Group tasks by day
+        history = {}
+        for task in user.tasks:
+            day = task.vote_time.strftime("%Y-%m-%d")
+            history.setdefault(day, []).append(task)
+        # Sort tasks within each day (latest first) and sort days descending
+        for day in history:
+            history[day].sort(key=lambda t: t.vote_time, reverse=True)
+        sorted_history = dict(sorted(history.items(), key=lambda item: item[0], reverse=True))
+        return render_template('history.html', history=sorted_history)
 
     return app
 
